@@ -7,4 +7,3 @@ def twenty_twenty_three():
     """
     return 2023
 
-print (twenty_twenty_three())

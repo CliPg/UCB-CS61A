@@ -42,7 +42,7 @@ def two_of_three(i, j, k):
     >>> two_of_three(5, 5, 5)
     50
     """
-    return i*i + j*j + k*k - max(i,j,k)*max(i,j,k)
+    return i**2 + j**2 + k**2 - max(i,j,k)**2
 
 def two_of_three_syntax_check():
     """Check that your two_of_three code consists of nothing but a return statement.
@@ -93,9 +93,13 @@ def hailstone(n):
     1
     """
     "*** YOUR CODE HERE ***"
+    step = 1
     while n != 1 :
+        print(n)
         if n % 2 == 0:
             n = n / 2
+            step += 1
         else:
             n = n*3 + 1
-    return n
+            step += 1
+    return step
