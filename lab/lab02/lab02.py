@@ -130,17 +130,17 @@ def cycle(f1, f2, f3):
     """
     "*** YOUR CODE HERE ***"
     def h(n):
-        def func(x):
-            result = x
-            while n > 0:
-                if n % 3 == 1:
-                    result = f1(result)
-                if n % 3 == 2:
-                    result = f2(result)
-                if n % 3 == 0:
-                    result = f3(result)
-                n -= 1
-            return result
+        def func(x,num = n):
+            i = 1
+            while i <= num:
+                if i % 3 == 1:
+                    x = f1(x)
+                elif i % 3 == 2:
+                    x = f2(x)
+                else:
+                    x = f3(x)
+                i += 1
+            return x
         return func
     return h
 
