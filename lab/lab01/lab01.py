@@ -85,7 +85,6 @@ def double_eights(n):
     "*** YOUR CODE HERE ***"
     count = 0
     while n > 0 :
-        print(n)
         if n % 10 == 8:
             count += 1
         n //= 10
