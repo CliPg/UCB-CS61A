@@ -264,14 +264,293 @@ def wpm(typed, elapsed):
     return len(typed)/5.0/elapsed*60
     # END PROBLEM 4
 
-ps = ['hi', 'how are you?', 'fine']
-s = lambda p: len(p) <= 4
-print(pick(ps, s, 2))
-print(len(ps[1]))
-print(remove_punctuation(ps[1]).split())
+def autocorrect(typed_word, word_list, diff_function, limit):
+    """Returns the element of WORD_LIST that has the smallest difference
+    from TYPED_WORD. If multiple words are tied for the smallest difference,
+    return the one that appears closest to the front of WORD_LIST. If the
+    difference is greater than LIMIT, instead return TYPED_WORD.
+    diff_function:返回数字
+    功能:返回差异最小的单词,但是差异必须在limit内
+    Arguments:
+        typed_word: a string representing a word that may contain typos
+        word_list: a list of strings representing source words
+        diff_function: a function quantifying the difference between two words
+        limit: a number
+
+    >>> ten_diff = lambda w1, w2, limit: 10 # Always returns 10
+    >>> autocorrect("hwllo", ["butter", "hello", "potato"], ten_diff, 20)
+    'butter'
+    >>> first_diff = lambda w1, w2, limit: (1 if w1[0] != w2[0] else 0) # Checks for matching first char
+    >>> autocorrect("tosting", ["testing", "asking", "fasting"], first_diff, 10)
+    'testing'
+    """
+    # BEGIN PROBLEM 5
+    "*** YOUR CODE HERE ***"
+    diff_list = [diff_function(typed_word,list_word,limit) for list_word in word_list]
+    diff_min = min(diff_list)
+    for list_word in word_list:
+        if diff_function(typed_word,list_word,limit) == diff_min:
+            return list_word
+    # END PROBLEM 5
+
+def feline_fixes(typed, source, limit):
+    """A diff function for autocorrect that determines how many letters
+    in TYPED need to be substituted to create SOURCE, then adds the difference in
+    their lengths and returns the result.
+
+    Arguments:
+        typed: a starting word
+        source: a string representing a desired goal word
+        limit: a number representing an upper bound on the number of chars that must change
+
+    >>> big_limit = 10
+    >>> feline_fixes("nice", "rice", big_limit)    # Substitute: n -> r
+    1
+    >>> feline_fixes("range", "rungs", big_limit)  # Substitute: a -> u, e -> s
+    2
+    >>> feline_fixes("pill", "pillage", big_limit) # Don't substitute anything, length difference of 3.
+    3
+    >>> feline_fixes("roses", "arose", big_limit)  # Substitute: r -> a, o -> r, s -> o, e -> s, s -> e
+    5
+    >>> feline_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
+    5
+    """
+    # BEGIN PROBLEM 6
+    if len(typed) == 1 or len(source) == 1:
+        if typed[0] == source[0]:
+            return 0 + abs(len(typed) - len(source))
+        else:
+            return 1 + abs(len(typed) - len(source))
+    else:
+        return feline_fixes(typed[1:],source[1:],limit) + feline_fixes(typed[0],source[0],limit)
+
+def minimum_mewtations(typed, source, limit):#太抽象了（bushi
+    """A diff function that computes the edit distance from TYPED to SOURCE.
+    This function takes in a string TYPED, a string SOURCE, and a number LIMIT.
+    Arguments:
+        typed: a starting word
+        source: a string representing a desired goal word
+        limit: a number representing an upper bound on the number of edits
+    >>> big_limit = 10
+    >>> minimum_mewtations("cats", "scat", big_limit)       # cats -> scats -> scat
+    2
+    >>> minimum_mewtations("purng", "purring", big_limit)   # purng -> purrng -> purring
+    2
+    >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
+    3
+    """
+    if limit < 0: # Base cases should go here, you may add more base cases as needed.
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return 0
+        # END
+    # Recursive cases should go below here
+    if len(typed) == 0 or len(source) == 0: # Feel free to remove or add additional cases
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return abs(len(typed) - len(source))
+        # END
+    elif typed[0] == source[0]:
+        return minimum_mewtations(typed[1:],source[1:],limit)
+    else:
+        add = minimum_mewtations(typed,source[1:],limit-1)
+        remove = minimum_mewtations(typed[1:],source,limit-1)
+        substitute = minimum_mewtations(typed[1:],source[1:],limit-1)
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return 1 + min(add, remove, substitute)
+
+def report_progress(typed, source, user_id, upload):
+    """Upload a report of your id and progress so far to the multiplayer server.
+    Returns the progress so far.
+
+    Arguments:
+        typed: a list of the words typed so far
+        source: a list of the words in the typing source
+        user_id: a number representing the id of the current user
+        upload: a function used to upload progress to the multiplayer server
+
+    >>> print_progress = lambda d: print('ID:', d['id'], 'Progress:', d['progress'])
+    >>> # The above function displays progress in the format ID: __, Progress: __
+    >>> print_progress({'id': 1, 'progress': 0.6})
+    ID: 1 Progress: 0.6
+    >>> typed = ['how', 'are', 'you']
+    >>> source = ['how', 'are', 'you', 'doing', 'today']
+    >>> report_progress(typed, source, 2, print_progress)
+    ID: 2 Progress: 0.6
+    0.6
+    >>> report_progress(['how', 'aree'], source, 3, print_progress)
+    ID: 3 Progress: 0.2
+    0.2
+    """
+    # BEGIN PROBLEM 8
+    "*** YOUR CODE HERE ***"
+    count = 0
+    for typed_word in typed:
+        if typed_word in source:
+            count += 1
+    upload({'id': user_id, 'progress': count/len(source)})
+
+def time_per_word(words, timestamps_per_player):
+    """Given timing data, return a match data abstraction, which contains a
+    list of words and the amount of time each player took to type each word.
+
+    Arguments:
+        words: a list of words, in the order they are typed.
+        timestamps_per_player: A list of lists of timestamps including the time
+                          the player started typing, followed by the time
+                          the player finished typing each word.
+
+    >>> p = [[75, 81, 84, 90, 92], [19, 29, 35, 36, 38]]
+    >>> match = time_per_word(['collar', 'plush', 'blush', 'repute'], p)
+    >>> get_all_words(match)
+    ['collar', 'plush', 'blush', 'repute']
+    >>> get_all_times(match)
+    [[6, 3, 6, 2], [10, 6, 1, 2]]
+    """
+    # BEGIN PROBLEM 9
+    "*** YOUR CODE HERE ***"
+    times = []
+    for player in timestamps_per_player:
+        tpp = []
+        for i in range(len(player) - 1):
+            tpp.append(player[i+1] - player[i])
+        times.append(tpp)
+    return match(words,times)
+
+def fastest_words(match):
+    """Return a list of lists of which words each player typed fastest.
+
+    Arguments:
+        match: a match data abstraction as returned by time_per_word.
+
+    >>> p0 = [5, 1, 3]
+    >>> p1 = [4, 1, 6]
+    >>> fastest_words(match(['Just', 'have', 'fun'], [p0, p1]))
+    [['have', 'fun'], ['Just']]
+    >>> p0  # input lists should not be mutated
+    [5, 1, 3]
+    >>> p1
+    [4, 1, 6]
+    """
+    player_indices = range(len(get_all_times(match)))  # contains an *index* for each player
+    word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
+    # BEGIN PROBLEM 10
+    "*** YOUR CODE HERE ***"
+    # END PROBLEM 10
+
+
+def match(words, times):
+    """A data abstraction containing all words typed and their times.
+
+    Arguments:
+        words: A list of strings, each string representing a word typed.
+        times: A list of lists for how long it took for each player to type
+            each word.
+            times[i][j] = time it took for player i to type words[j].
+
+    Example input:
+        words: ['Hello', 'world']
+        times: [[5, 1], [4, 2]]
+    """
+    assert all([type(w) == str for w in words]), 'words should be a list of strings'
+    assert all([type(t) == list for t in times]), 'times should be a list of lists'
+    assert all([isinstance(i, (int, float)) for t in times for i in t]), 'times lists should contain numbers'
+    assert all([len(t) == len(words) for t in times]), 'There should be one word per time.'
+    return {"words": words, "times": times}
+
+
+def get_word(match, word_index):
+    """A utility function that gets the word with index word_index"""
+    assert 0 <= word_index < len(get_all_words(match)), "word_index out of range of words"
+    return get_all_words(match)[word_index]
+
+
+def time(match, player_num, word_index):
+    """A utility function for the time it took player_num to type the word at word_index"""
+    assert word_index < len(get_all_words(match)), "word_index out of range of words"
+    assert player_num < len(get_all_times(match)), "player_num out of range of players"
+    return get_all_times(match)[player_num][word_index]
+
+def get_all_words(match):
+    """A selector function for all the words in the match"""
+    return match["words"]
+
+def get_all_times(match):
+    """A selector function for all typing times for all players"""
+    return match["times"]
+
+
+def match_string(match):
+    """A helper function that takes in a match data abstraction and returns a string representation of it"""
+    return f"match({get_all_words(match)}, {get_all_times(match)})"
+
+enable_multiplayer = False  # Change to True when you're ready to race.
+
+##########################
+# Command Line Interface #
+##########################
+
+
+
+
+def fastest_words(match):
+    """Return a list of lists of which words each player typed fastest.
+
+    Arguments:
+        match: a match data abstraction as returned by time_per_word.
+
+    >>> p0 = [5, 1, 3]
+    >>> p1 = [4, 1, 6]
+    >>> fastest_words(match(['Just', 'have', 'fun'], [p0, p1]))
+    [['have', 'fun'], ['Just']]
+    >>> p0  # input lists should not be mutated
+    [5, 1, 3]
+    >>> p1
+    [4, 1, 6]
+    """
+    player_indices = range(len(get_all_times(match)))  # contains an *index* for each player
+    word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
+    # BEGIN PROBLEM 10
+    "*** YOUR CODE HERE ***"
+    player_indices = range(len(get_all_times(match)))  # contains an *index* for each player
+    word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
+    # BEGIN PROBLEM 10
+    "*** YOUR CODE HERE ***"
+    player_0 = []
+    player_1 = []
+    for i in range(len(get_all_words(match))):
+        if get_all_times(match)[0][i] <= get_all_times(match)[1][i]:
+            player_0.append(get_all_words(match)[i])
+        else:
+            player_1.append(get_all_words(match)[i])
+    return [player_0,player_1]    
+
+
 about_dogs = about(['dog', 'dogs', 'pup', 'puppy'])
 print(pick(['Cute Dog!', 'That is a cat.', 'Nice pup!'], about_dogs, 1))
-print(ps[0][0])
 print(split('cute Dog.'))
 print(accuracy('', ''))
 print(wpm('hello friend hello buddy hello', 15))
+def length_diff(w1, w2, limit):
+    return min(limit + 1, abs(len(w2) - len(w1)))
+ten_diff = lambda w1, w2, limit: 10
+print(autocorrect("hwllo", ["butter", "hello", "potato"], ten_diff, 20))
+first_diff = lambda w1, w2, limit: (1 if w1[0] != w2[0] else 0) # Checks for matching first char
+print(autocorrect("tosting", ["testing", "asking", "fasting"], first_diff, 10))
+big_limit = 10
+print(feline_fixes("roses", "arose", big_limit))    # Substitute: n -> r
+print(minimum_mewtations("cats", "scat", big_limit))
+print_progress = lambda d: print('ID:', d['id'], 'Progress:', d['progress'])
+# The above function displays progress in the format ID: __, Progress: __
+typed = ['howw', 'aree', 'you']
+source = ['how', 'are', 'you', 'doing', 'today']
+report_progress(typed, source, 'PaulGeorge', print_progress)
+p = [[75, 81, 84, 90, 92], [19, 29, 35, 36, 38]]
+#match = time_per_word(['collar', 'plush', 'blush', 'repute'], p)
+#print(get_all_words(match))
+#print(get_all_times(match))
+p0 = [5, 1, 3]
+p1 = [4, 1, 6]
+#print(match(['Just', 'have', 'fun'], [p0, p1]))
+print(fastest_words(match(['Just', 'have', 'fun'], [p0, p1])))

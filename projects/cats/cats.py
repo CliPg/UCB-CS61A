@@ -284,7 +284,7 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
-    return len(typed)/2.0/elapsed*60
+    return len(typed)*12/elapsed
     # END PROBLEM 4
 
 
@@ -298,7 +298,8 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     from TYPED_WORD. If multiple words are tied for the smallest difference,
     return the one that appears closest to the front of WORD_LIST. If the
     difference is greater than LIMIT, instead return TYPED_WORD.
-
+    diff_function:返回数字
+    功能:返回差异最小的单词,但是差异必须在limit内
     Arguments:
         typed_word: a string representing a word that may contain typos
         word_list: a list of strings representing source words
@@ -314,6 +315,12 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    #将list_word中的元素遍历代入diff_function，得到差异大小的集合，并找到min，在进行一次遍历
+    diff_list = [diff_function(typed_word,list_word,limit) for list_word in word_list]
+    diff_min = min(diff_list)
+    for list_word in word_list:
+        if diff_function(typed_word,list_word,limit) == diff_min:
+            return list_word
     # END PROBLEM 5
 
 
@@ -340,7 +347,13 @@ def feline_fixes(typed, source, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    if len(typed) == 1 or len(source) == 1:
+        if typed[0] == source[0]:
+            return 0 + abs(len(typed) - len(source))
+        else:
+            return 1 + abs(len(typed) - len(source))
+    else:
+        return feline_fixes(typed[1:],sorted[1:],limit) + feline_fixes(typed[0],source[0],limit)
     # END PROBLEM 6
 
 
@@ -364,22 +377,26 @@ def minimum_mewtations(typed, source, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if ___________: # Base cases should go here, you may add more base cases as needed.
+    if limit < 0: # Base cases should go here, you may add more base cases as needed.
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 0
         # END
     # Recursive cases should go below here
-    if ___________: # Feel free to remove or add additional cases
+    if len(typed) == 0 or len(source) == 0: # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return abs(len(typed) - len(source))
         # END
+    elif typed[0] == source[0]:
+        return minimum_mewtations(typed[1:],source[1:],limit)
     else:
-        add = ... # Fill in these lines
-        remove = ...
-        substitute = ...
+        add = minimum_mewtations(typed,source[1:],limit-1)
+        remove = minimum_mewtations(typed[1:],source,limit-1)
+        substitute = minimum_mewtations(typed[1:],source[1:],limit-1)
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 1 + min(add, remove, substitute)
         # END
 
 
@@ -421,6 +438,11 @@ def report_progress(typed, source, user_id, upload):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    count = 0
+    for typed_word in typed:
+        if typed_word in source:
+            count += 1
+    upload({'id': user_id, 'progress': count/len(source)})
     # END PROBLEM 8
 
 
@@ -443,6 +465,13 @@ def time_per_word(words, timestamps_per_player):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = []
+    for player in timestamps_per_player:
+        tpp = []
+        for i in range(len(player) - 1):
+            tpp.append(player(i+1) - player(i))
+        times.append(tpp)
+    return match(words,times)
     # END PROBLEM 9
 
 
@@ -465,6 +494,15 @@ def fastest_words(match):
     word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    player_0 = []
+    player_1 = []
+    for i in range(len(get_all_words(match))):
+        if get_all_times(match)[0][i] <= get_all_times(match)[1][i]:
+            player_0.append(get_all_words(match)[i])
+        else:
+            player_1.append(get_all_words(match)[i])
+    return [player_0,player_1]    
+
     # END PROBLEM 10
 
 
