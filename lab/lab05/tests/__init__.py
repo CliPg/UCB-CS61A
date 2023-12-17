@@ -282,27 +282,31 @@ def closer_city(lat, lon, city_a, city_b):
         return get_name(city_a)
 
 def dejavu(t, n):
-  """
-  >>> my_tree = tree(2, [tree(3, [tree(5), tree(7)]), tree(4)])
-  >>> dejavu(my_tree, 12) # 2 -> 3 -> 7
-  True
-  >>> dejavu(my_tree, 5) # Sums of partial paths like 2 -> 3 don ’t count
-  False
-  """
-  "*** YOUR CODE HERE ***"
-  root_value = t[0]
-  remaining_path = t[1:]
-  
-  if not remaining_path:
-      # If it's a leaf, check if the leaf value is equal to n
-      return root_value == 0
-  else:
-      # Recursive check for left and right branches
-      left_result = dejavu(remaining_path[0], n - root_value)
-      right_result = dejavu(remaining_path[1:], n - root_value)
-      
-      # Return True if either left or right path has a valid sum
-      return left_result or right_result
+    """
+    >>> my_tree = tree(2, [tree(3, [tree(5), tree(7)]), tree(4)])
+    >>> dejavu(my_tree, 12) # 2 -> 3 -> 7
+    True
+    >>> dejavu(my_tree, 5) # Sums of partial paths like 2 -> 3 don ’t count
+    False
+    """
+    "*** YOUR CODE HERE ***"
+    value = label(t)
+    branch = branches(t)
+    #检查叶子节点的值是否等于n
+    if label(t) == n and is_leaf(t):
+        return True
+    if is_leaf(t):
+       return tree(value)
+    #对分支进行遍历
+    else:                                                         
+        for i in range(len(branches(t))):
+            branch[i] = dejavu(branch[i],n)
+        return tree(value,branch)  
+
+
+
+
+
     
 print(branches(number_tree))
 scrat = tree('berry')
