@@ -1,5 +1,7 @@
 # Notes
 
+**Remember:lab05两个可选题还不会做 **
+
 **1.列表推导式**
 
 列表推导式是一种简洁的方式，用于从一个可迭代的对象（比如 `range`、列表、字符串等）创建一个新的列表。
@@ -143,3 +145,92 @@ print(product)
    **每个word实际上是一个数组**
 
 2. `map(lambda word: 1 if word.lower() == word.lower()[::-1] else 0, L)`: `map` 函数将这个 lambda 函数应用于序列 `L` 中的每个元素。对于每个单词，如果它是回文，映射的结果就是 `1`，否则是 `0`。
+
+**4.Dictionaries**
+
+- 格式：
+
+  ```python
+  >>> artists = {
+  ...    'Ariana Grande': 'No Tears Left To Cry',
+  ...    'Marshmello': 'FRIENDS',
+  ...    'Migos': ['Stir Fry', 'Walk It Talk It']
+  ... }
+  ```
+
+- 调用：
+
+  ```python
+  >>> artists['Ariana Grande']
+  'No Tears Left To Cry'
+  >>> songs = artists['Migos']
+  >>> songs[0]
+  'Stir Fry'
+  ```
+
+  
+
+- 冒号左边是键 右边是值
+
+- 键要唯一，且只能是不可变类型（例如字符串、数字、元组）。 不能使用列表作为键
+
+- `dict.keys()`将返回一系列键。
+
+  ```
+  >>> list(artists.keys()) # We use list() to turn the sequence into a list
+  ['Ariana Grande', 'Marshmello', 'Migos', 'Charlie Puth']
+  ```
+
+- `dict.values()`将返回一个值序列。
+
+  ```
+  >>> list(artists.values())
+  ['No Tears Left To Cry', 'Wolves', ['Stir Fry', 'Walk It Talk It'], 'Attention']
+  ```
+
+- `dict.items()`将返回键值元组序列。
+
+  ```
+  >>> list(artists.items())
+  [('Ariana Grande', 'No Tears Left To Cry'),
+   ('Marshmello', 'Wolves'),
+   ('Migos', ['Stir Fry', 'Walk It Talk It']),
+   ('Charlie Puth', 'Attention')]
+  ```
+
+**5.树**
+
+- eg.
+
+  ```python
+  number_tree = tree(1,
+           [tree(2),
+            tree(3,
+                 [tree(4),
+                  tree(5)]),
+            tree(6,
+                 [tree(7)])])
+  ```
+
+   
+
+  ```
+     1
+   / | \
+  2  3  6
+    / \  \
+   4   5  7
+  ```
+
+   
+
+- 构造函数
+  - `tree(label, branches=[])`：label赋有树存储的值,branches是列表，即树的分支，每个分支也是一棵树
+- 选择器
+  - `label(tree)`：返回`tree`根节点中的值。
+  - `branches(tree)`：返回给定树的分支列表（每个分支也是一棵树）
+- 便利功能
+  - `is_leaf(tree)`：叶子节点：只有值，没有分支，若该树是叶子节点，则返回true
+  - label(branches(number_tree)[1])
+
+branches（）返回number_tree的分支列表，[1]表示这个列表的第二个项目，label（）返回这个节点的值
