@@ -181,6 +181,6 @@ print(max_path_sum(t))
 greetings = tree('h', [tree('i'),
                        tree('e', [tree('l', [tree('l', [tree('o')])]),
                                   tree('y')])])
-print(has_path(greetings, 'hel'))
+print(has_path(greetings, 'hello'))
 
 
