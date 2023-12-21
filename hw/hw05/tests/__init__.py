@@ -99,19 +99,6 @@ def hailstone(n):
     else:
        yield from hailstone(3*n + 1)
     
-    #yield n
-    #if n == 1:
-    #    while True:
-    #        yield 1
-    #elif n % 2 == 0:
-    #    yield from hailstone(n // 2)
-    #else:
-    #    yield from hailstone(3 * n + 1)
-
-
-
-
-
 
 
 def merge(a, b):

@@ -303,7 +303,30 @@ def dejavu(t, n):
             branch[i] = dejavu(branch[i],n)
         return tree(value,branch)  
 
-
+def hailstone_tree(n, h):
+    """Generates a tree of hailstone numbers that will reach N, with height H.
+    >>> print_tree(hailstone_tree(1, 0))
+    1
+    >>> print_tree(hailstone_tree(1, 4))
+    1
+      2
+        4
+          8
+            16
+    >>> print_tree(hailstone_tree(8, 3))
+    8
+      16
+        32
+          64
+        5
+          10
+    """
+    if h == 0:
+        return tree(n)
+    branches = [hailstone_tree(n * 2, h - 1)]
+    if (n-1)%3 == 0 and n != 1 and (n-1)//3 != 1:
+        branches += [hailstone_tree((n-1)//3,h-1)]
+    return tree(n, branches)
 
 
 
@@ -333,3 +356,7 @@ stanford = make_city('Stanford', 34.05, 118.25)
 print(closer_city(38.33, 121.44, berkeley, stanford))
 my_tree = tree(2, [tree(3, [tree(5), tree(7)]), tree(4)])
 print(dejavu(my_tree, 12)) # 2 -> 3 -> 7
+print_tree(hailstone_tree(1, 0))
+print_tree(hailstone_tree(1, 4))
+print_tree(hailstone_tree(8, 3))
+print(hailstone_tree(1, 0))
