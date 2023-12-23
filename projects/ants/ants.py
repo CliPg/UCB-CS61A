@@ -182,6 +182,8 @@ class ThrowerAnt(Ant):
     damage = 1
     food_cost = 3
     health = 1
+    lower_bound = float('inf')
+    upper_bound = 0
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
 
     def nearest_bee(self):
@@ -192,10 +194,15 @@ class ThrowerAnt(Ant):
         """
         # BEGIN Problem 3 and 4
         temp = self.place
-        while temp.is_hive == True:
-            if len(temp.bees) == 0:
-                return random_bee(self.place.bees)
+        distance = 0
+        while temp.is_hive == False :
+            if len(temp.bees) != 0:
+                if distance < self.upper_bound:
+                    return random_bee(self.place.bees)
+                elif distance > self.lower_bound:
+                    return random_bee(self.place.bees)
             temp = temp.entrance
+            distance += 1
         return None
          # REPLACE THIS LINE
         # END Problem 3 and 4
@@ -227,9 +234,10 @@ class ShortThrower(ThrowerAnt):
 
     name = 'Short'
     food_cost = 2
+    upper_bound = 4
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
 
@@ -238,9 +246,10 @@ class LongThrower(ThrowerAnt):
 
     name = 'Long'
     food_cost = 2
+    lower_bound = 4
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
 
