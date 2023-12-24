@@ -204,7 +204,7 @@ print(product)
   def berry_finder(t):
     """Returns True if t contains a node with the value 'berry' and 
     False otherwise.
-
+  
     >>> scrat = tree('berry')
     >>> berry_finder(scrat)
     True
@@ -337,5 +337,39 @@ s[:5] #输出从开始到索引4的项
 
 - `reduce(f, iterable)` - 必须导入 `functools` 模块。将二元函数 `f` 逐个累积地应用到可迭代对象的元素上，从左到右，以将序列减少为单个值。
 
+**10.类**
 
+eg.
+
+```python
+class Account:
+
+    max_withdrawal = 10
+    interest = 0.02
+
+    def __init__(self, account_holder):
+        self.balance = 0
+        self.holder = account_holder
+
+    def deposit(self, amount):
+        self.balance = self.balance + amount
+        return self.balance
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            return "Insufficient funds"
+        if amount > self.max_withdrawal:
+            return "Can't withdraw that amount"
+        self.balance = self.balance - amount
+        return self.balance
+    def time_to_retire(self, amount):
+        """Return the number of years until balance would grow to amount."""
+        assert self.balance > 0 and amount > 0 and self.interest > 0
+        "*** YOUR CODE HERE ***"
+        year = 0
+        while self.balance*(1.02**year) < amount:
+            year += 1
+        return year
+
+```
 
